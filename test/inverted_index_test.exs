@@ -71,12 +71,14 @@ defmodule InvertedIndexTest do
   test "full process" do
     document = %{
       id: "123",
+      filename: "document123.txt",
       body: "Turtles if are the a love pizza"
     }
 
     converter = fn(d) ->
       %{
         docId: d.id,
+        filename: d.filename,
         text: d.body
       }
     end
@@ -85,7 +87,18 @@ defmodule InvertedIndexTest do
             |> InvertedIndex.build(converter)
             |> InvertedIndex.invert
 
-    assert terms === ~w(docId:123 text:turtles text:love text:pizza)
+    assert terms === ~w(docId:123 filename:document123.txt text:turtles text:love text:pizza)
   end
+
+
+  # index: wikipedia
+  # %{
+  #   text:turtles => [document123.txt],
+  #   text:love => [document123.txt],
+  #   text:pizza => [document123.txt, document456.txt],
+  #   ....
+  # }
+
+
 
 end

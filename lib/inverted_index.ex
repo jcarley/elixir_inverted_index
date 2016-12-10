@@ -19,15 +19,18 @@ defmodule InvertedIndex do
   end
 
   def extract_terms(s) do
-    List.flatten(Regex.scan(~r/[A-Za-z\d]+/, s))
+    Regex.scan(~r(\b[A-Za-z0-9-_.]+\b), s)
+    |> List.flatten()
   end
 
   def lower_case_filter(terms) do
-    Enum.map(terms, fn t -> String.downcase(t) end)
+    terms
+    |> Enum.map(&String.downcase/1)
   end
 
   def dedup_filter(terms) do
-    Enum.uniq terms
+    terms
+    |> Enum.uniq
   end
 
   def stop_words_filter(terms, stop_words) do
@@ -35,7 +38,8 @@ defmodule InvertedIndex do
   end
 
   def prefix_filter(terms, tag) do
-    Enum.map(terms, fn t -> "#{tag}:#{t}" end)
+    terms
+    |> Enum.map(&("#{tag}:#{&1}"))
   end
 
 end
